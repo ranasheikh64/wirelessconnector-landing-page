@@ -6,875 +6,409 @@
   <title>WirelessConnect – Control Your Android, Wirelessly</title>
   <meta name="description" content="WirelessConnect lets you mirror, control, and manage your Android device wirelessly from your Mac, Windows, or Linux PC. No USB needed." />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     :root {
-      --bg: #050d1a;
-      --bg2: #070f20;
-      --accent: #00d4ff;
-      --accent2: #0057ff;
-      --accent3: #7c3aed;
+      --sky-dark: #0a2a6e;
+      --accent: #00c6ff;
+      --accent2: #0072ff;
       --white: #ffffff;
-      --muted: rgba(255,255,255,0.60);
-      --card-bg: rgba(255,255,255,0.04);
-      --card-border: rgba(255,255,255,0.09);
-      --radius: 20px;
+      --text-muted: rgba(255,255,255,0.70);
     }
-
     html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', sans-serif; background: var(--sky-dark); color: var(--white); overflow-x: hidden; }
 
-    body {
-      font-family: 'Inter', sans-serif;
-      background: var(--bg);
-      color: var(--white);
-      overflow-x: hidden;
-    }
-
-    /* ── SCROLLBAR ── */
-    ::-webkit-scrollbar { width: 6px; }
-    ::-webkit-scrollbar-track { background: var(--bg); }
-    ::-webkit-scrollbar-thumb { background: var(--accent2); border-radius: 3px; }
-
-    /* ── NAVBAR ── */
+    /* NAVBAR */
     nav {
-      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
       display: flex; align-items: center; justify-content: space-between;
-      padding: 16px 60px;
-      background: rgba(5,13,26,0.7);
-      backdrop-filter: blur(24px);
-      border-bottom: 1px solid rgba(255,255,255,0.06);
-      transition: background .3s;
+      padding: 18px 60px;
+      background: rgba(10,42,110,0.65);
+      backdrop-filter: blur(18px);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
     }
-    nav.scrolled { background: rgba(5,13,26,0.95); }
-
     .nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
-    .nav-logo img { width: 32px; height: 32px; border-radius: 8px; }
-    .nav-logo span { font-size: 17px; font-weight: 800; color: #fff; letter-spacing: -0.3px; }
-
+    .nav-logo svg { width: 32px; height: 32px; }
+    .nav-logo span { font-size: 18px; font-weight: 700; color: #fff; }
     .nav-links { display: flex; gap: 32px; list-style: none; }
-    .nav-links a { color: var(--muted); text-decoration: none; font-size: 14px; font-weight: 500; transition: color .2s; position: relative; }
-    .nav-links a::after { content:''; position:absolute; bottom:-4px; left:0; width:0; height:2px; background: var(--accent); border-radius:2px; transition: width .3s; }
+    .nav-links a { color: var(--text-muted); text-decoration: none; font-size: 14px; font-weight: 500; transition: color .2s; }
     .nav-links a:hover { color: #fff; }
-    .nav-links a:hover::after { width: 100%; }
+    .nav-cta { background: linear-gradient(135deg,var(--accent),var(--accent2)); color:#fff; padding:10px 24px; border-radius:100px; font-size:14px; font-weight:600; text-decoration:none; transition:opacity .2s,transform .2s; }
+    .nav-cta:hover { opacity:.88; transform:translateY(-1px); }
 
-    .nav-cta {
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      color: #fff; padding: 10px 22px; border-radius: 100px;
-      font-size: 13px; font-weight: 700; text-decoration: none;
-      transition: transform .2s, box-shadow .2s;
-      box-shadow: 0 4px 20px rgba(0,87,255,.35);
-    }
-    .nav-cta:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(0,87,255,.5); }
-
-    /* ── HERO ── */
+    /* HERO */
     .hero {
       min-height: 100vh; position: relative;
       display: flex; flex-direction: column; align-items: center; justify-content: center;
-      text-align: center; padding: 140px 24px 80px; overflow: hidden;
+      text-align: center; padding: 120px 24px 80px; overflow: hidden;
     }
+    .hero-bg { position:absolute; inset:0; background-image:url('images/sky_bg.png'); background-size:cover; background-position:center; opacity:.35; }
+    .hero-gradient { position:absolute; inset:0; background:linear-gradient(180deg,rgba(10,42,110,.1) 0%,rgba(21,101,192,.4) 50%,rgba(10,42,110,.95) 100%); }
+    .hero-stars {
+      position:absolute; inset:0;
+      background-image: radial-gradient(circle, rgba(255,255,255,.9) 1px, transparent 1px), radial-gradient(circle, rgba(255,255,255,.6) 1px, transparent 1px);
+      background-size: 200px 200px, 150px 150px;
+      background-position: 0 0, 80px 80px;
+      animation: twinkle 8s ease-in-out infinite alternate; opacity:.25;
+    }
+    @keyframes twinkle { 0%{opacity:.12} 100%{opacity:.35} }
+    .hero-content { position:relative; z-index:2; max-width:780px; }
+    .hero-badge { display:inline-flex; align-items:center; gap:8px; background:rgba(255,255,255,.1); border:1px solid rgba(255,255,255,.2); padding:6px 16px; border-radius:100px; font-size:12px; font-weight:600; letter-spacing:.5px; color:var(--accent); margin-bottom:28px; text-transform:uppercase; }
+    .dot { width:6px; height:6px; background:var(--accent); border-radius:50%; display:inline-block; animation:pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
+    h1 { font-size:clamp(40px,7vw,76px); font-weight:900; line-height:1.05; letter-spacing:-2px; background:linear-gradient(135deg,#fff 30%,var(--accent) 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; margin-bottom:24px; }
+    .hero-sub { font-size:clamp(16px,2.5vw,20px); color:var(--text-muted); line-height:1.7; margin-bottom:48px; max-width:600px; margin-inline:auto; }
+    .hero-btns { display:flex; gap:16px; justify-content:center; flex-wrap:wrap; margin-bottom:40px; }
+    .btn-primary { background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#fff; padding:16px 36px; border-radius:100px; font-size:16px; font-weight:700; text-decoration:none; transition:transform .2s,box-shadow .2s; box-shadow:0 8px 32px rgba(0,198,255,.35); }
+    .btn-primary:hover { transform:translateY(-3px); box-shadow:0 14px 40px rgba(0,198,255,.5); }
+    .btn-secondary { background:rgba(255,255,255,.08); color:#fff; padding:16px 36px; border-radius:100px; font-size:16px; font-weight:600; text-decoration:none; border:1px solid rgba(255,255,255,.2); transition:background .2s,transform .2s; }
+    .btn-secondary:hover { background:rgba(255,255,255,.15); transform:translateY(-2px); }
+    .hero-screenshot { position:relative; z-index:2; width:min(900px,92vw); margin:0 auto; border-radius:18px; overflow:hidden; box-shadow:0 40px 120px rgba(0,0,0,.6),0 0 0 1px rgba(255,255,255,.08); animation:float 6s ease-in-out infinite; }
+    @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
+    .hero-screenshot img { width:100%; display:block; }
 
-    /* Animated mesh gradient background */
-    .hero-mesh {
-      position: absolute; inset: 0; z-index: 0;
-      background:
-        radial-gradient(ellipse 80% 60% at 20% 20%, rgba(0,87,255,.25) 0%, transparent 60%),
-        radial-gradient(ellipse 60% 80% at 80% 80%, rgba(124,58,237,.2) 0%, transparent 60%),
-        radial-gradient(ellipse 60% 50% at 50% 100%, rgba(0,212,255,.15) 0%, transparent 60%),
-        linear-gradient(180deg, #050d1a 0%, #070f20 100%);
-      animation: meshShift 12s ease-in-out infinite alternate;
-    }
-    @keyframes meshShift {
-      0% { background-position: 0% 0%, 100% 100%, 50% 100%; }
-      100% { background-position: 5% 5%, 95% 95%, 55% 100%; }
-    }
+    /* STATS */
+    .stats-bar { background:rgba(255,255,255,.05); border-top:1px solid rgba(255,255,255,.08); border-bottom:1px solid rgba(255,255,255,.08); padding:36px 60px; display:flex; justify-content:center; gap:64px; flex-wrap:wrap; }
+    .stat { text-align:center; }
+    .stat-number { font-size:36px; font-weight:800; background:linear-gradient(135deg,#fff,var(--accent)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+    .stat-label { font-size:13px; color:var(--text-muted); font-weight:500; margin-top:4px; }
 
-    /* Animated particles canvas */
-    #particles-canvas { position: absolute; inset: 0; z-index: 0; pointer-events: none;}
+    /* SECTIONS */
+    section { padding:100px 60px; }
+    .section-tag { font-size:12px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:var(--accent); margin-bottom:16px; }
+    .section-title { font-size:clamp(28px,4vw,46px); font-weight:800; letter-spacing:-1px; margin-bottom:16px; }
+    .section-sub { font-size:18px; color:var(--text-muted); line-height:1.7; max-width:560px; }
+    .container { max-width:1200px; margin:0 auto; }
 
-    .hero-content { position: relative; z-index: 2; max-width: 800px; }
+    /* FEATURES */
+    #features { background:linear-gradient(180deg,var(--sky-dark) 0%,#0d3b87 100%); }
+    .features-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:24px; margin-top:64px; }
+    .feature-card { background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.1); border-radius:20px; padding:36px; transition:transform .3s,background .3s,box-shadow .3s; }
+    .feature-card:hover { transform:translateY(-6px); background:rgba(255,255,255,.09); box-shadow:0 20px 60px rgba(0,0,0,.3); }
+    .feature-icon { width:56px; height:56px; border-radius:16px; background:linear-gradient(135deg,rgba(0,198,255,.2),rgba(0,114,255,.2)); border:1px solid rgba(0,198,255,.3); display:flex; align-items:center; justify-content:center; font-size:26px; margin-bottom:20px; }
+    .feature-title { font-size:18px; font-weight:700; margin-bottom:10px; }
+    .feature-desc { font-size:14px; color:var(--text-muted); line-height:1.7; }
 
-    .hero-badge {
-      display: inline-flex; align-items: center; gap: 8px;
-      background: rgba(0,212,255,.1); border: 1px solid rgba(0,212,255,.3);
-      padding: 7px 18px; border-radius: 100px;
-      font-size: 12px; font-weight: 700; letter-spacing: 1px;
-      color: var(--accent); margin-bottom: 32px; text-transform: uppercase;
-      animation: fadeInDown .8s ease both;
-    }
-    .live-dot {
-      width: 7px; height: 7px; background: #00ff88; border-radius: 50%;
-      box-shadow: 0 0 6px #00ff88; animation: livePulse 1.5s infinite;
-    }
-    @keyframes livePulse { 0%,100%{ opacity:1; transform:scale(1); } 50%{ opacity:.5; transform:scale(1.4); } }
+    /* HOW IT WORKS */
+    #how-it-works { background:linear-gradient(180deg,#0d3b87 0%,#1565c0 100%); }
+    .steps-grid { display:grid; grid-template-columns:1fr 1fr; gap:60px; align-items:center; margin-top:64px; }
+    .steps-list { display:flex; flex-direction:column; gap:32px; }
+    .step { display:flex; gap:20px; align-items:flex-start; }
+    .step-num { width:44px; height:44px; border-radius:50%; flex-shrink:0; background:linear-gradient(135deg,var(--accent),var(--accent2)); display:flex; align-items:center; justify-content:center; font-size:16px; font-weight:800; }
+    .step-title { font-size:17px; font-weight:700; margin-bottom:6px; }
+    .step-desc { font-size:14px; color:var(--text-muted); line-height:1.65; }
+    .steps-image { position:relative; }
+    .steps-image img { width:100%; border-radius:20px; box-shadow:0 30px 90px rgba(0,0,0,.5); border:1px solid rgba(255,255,255,.1); }
+    .img-glow { position:absolute; inset:-20px; background:radial-gradient(circle,rgba(0,198,255,.15) 0%,transparent 70%); pointer-events:none; }
 
-    h1 {
-      font-size: clamp(38px, 6.5vw, 72px); font-weight: 900;
-      line-height: 1.08; letter-spacing: -2px;
-      background: linear-gradient(135deg, #fff 0%, #a8d8ff 50%, var(--accent) 100%);
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-      margin-bottom: 24px;
-      animation: fadeInUp .9s .1s ease both;
-    }
+    /* SCREENSHOTS */
+    #screenshots { background:linear-gradient(180deg,#1565c0 0%,#0d3b87 100%); text-align:center; }
+    .screenshots-grid { display:grid; grid-template-columns:1fr 1fr; gap:24px; margin-top:64px; }
+    .ss-card { border-radius:16px; overflow:hidden; box-shadow:0 20px 60px rgba(0,0,0,.4); border:1px solid rgba(255,255,255,.1); transition:transform .3s; }
+    .ss-card:hover { transform:scale(1.02); }
+    .ss-card img { width:100%; display:block; }
+    .ss-label { padding:14px 20px; background:rgba(255,255,255,.06); font-size:13px; font-weight:600; color:var(--text-muted); text-align:left; }
 
-    .hero-sub {
-      font-size: clamp(16px, 2.2vw, 19px); color: var(--muted);
-      line-height: 1.75; margin-bottom: 44px; max-width: 620px; margin-inline: auto;
-      animation: fadeInUp .9s .2s ease both;
-    }
+    /* DOWNLOAD */
+    #download { background:linear-gradient(180deg,#0d3b87 0%,var(--sky-dark) 100%); text-align:center; }
+    #download .section-sub { margin-inline:auto; }
+    .download-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:24px; margin-top:64px; }
+    .download-card { background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.12); border-radius:24px; padding:40px 32px; text-align:center; transition:transform .3s,background .3s,box-shadow .3s; }
+    .download-card:hover { transform:translateY(-8px); background:rgba(255,255,255,.09); box-shadow:0 24px 64px rgba(0,0,0,.35); }
+    .dl-icon { font-size:48px; margin-bottom:20px; }
+    .dl-title { font-size:22px; font-weight:800; margin-bottom:8px; }
+    .dl-sub { font-size:13px; color:var(--text-muted); margin-bottom:28px; line-height:1.5; }
+    .dl-btn { display:inline-flex; align-items:center; gap:8px; background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#fff; padding:13px 28px; border-radius:100px; font-size:14px; font-weight:700; text-decoration:none; transition:opacity .2s,transform .2s; box-shadow:0 6px 20px rgba(0,114,255,.35); }
+    .dl-btn:hover { opacity:.88; transform:translateY(-2px); }
+    .dl-badge { margin-top:14px; font-size:11px; color:var(--text-muted); }
+    .dl-badge a { color:var(--accent); text-decoration:none; }
+    .gh-box { margin-top:60px; padding:40px; background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.1); border-radius:24px; display:flex; align-items:center; justify-content:space-between; gap:24px; flex-wrap:wrap; }
+    .gh-link { display:inline-flex; align-items:center; gap:10px; background:rgba(255,255,255,.1); border:1px solid rgba(255,255,255,.2); color:#fff; padding:14px 28px; border-radius:100px; font-size:15px; font-weight:600; text-decoration:none; transition:background .2s; }
+    .gh-link:hover { background:rgba(255,255,255,.18); }
 
-    .hero-btns {
-      display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;
-      margin-bottom: 56px;
-      animation: fadeInUp .9s .3s ease both;
-    }
-    .btn-primary {
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      color: #fff; padding: 15px 36px; border-radius: 100px;
-      font-size: 15px; font-weight: 700; text-decoration: none;
-      transition: transform .25s, box-shadow .25s;
-      box-shadow: 0 8px 32px rgba(0,87,255,.4);
-    }
-    .btn-primary:hover { transform: translateY(-4px); box-shadow: 0 16px 48px rgba(0,87,255,.55); }
+    /* FOOTER */
+    footer { background:rgba(0,0,0,.35); border-top:1px solid rgba(255,255,255,.08); padding:40px 60px; display:flex; align-items:center; justify-content:space-between; gap:20px; flex-wrap:wrap; }
+    .footer-brand { display:flex; align-items:center; gap:10px; }
+    .footer-brand span { font-size:15px; font-weight:700; }
+    .footer-built { font-size:13px; color:var(--text-muted); }
+    .footer-built a { color:var(--accent); text-decoration:none; font-weight:600; }
+    .footer-built a:hover { text-decoration:underline; }
+    .footer-copy { font-size:12px; color:rgba(255,255,255,.35); }
 
-    .btn-secondary {
-      background: rgba(255,255,255,.06); color: #fff;
-      padding: 15px 36px; border-radius: 100px;
-      font-size: 15px; font-weight: 600; text-decoration: none;
-      border: 1px solid rgba(255,255,255,.18);
-      transition: background .2s, transform .2s;
-    }
-    .btn-secondary:hover { background: rgba(255,255,255,.12); transform: translateY(-3px); }
-
-    /* Hero terminal */
-    .hero-terminal {
-      background: #0d1117; border: 1px solid rgba(255,255,255,.12);
-      border-radius: 14px; padding: 14px 20px;
-      margin: 0 auto 64px; max-width: 560px; text-align: left;
-      box-shadow: 0 24px 60px rgba(0,0,0,.6), 0 0 0 1px rgba(0,212,255,.08);
-      animation: fadeInUp .9s .4s ease both;
-    }
-    .term-header { display: flex; gap: 7px; margin-bottom: 14px; align-items: center; }
-    .term-dot { width: 13px; height: 13px; border-radius: 50%; }
-    .term-dot.r { background: #ff5f57; } .term-dot.y { background: #febc2e; } .term-dot.g { background: #28c840; }
-    .term-title { margin: 0 auto; color: rgba(255,255,255,.35); font-size: 11px; font-weight: 600; padding-right: 40px; }
-    .term-body { font-family: 'Courier New', monospace; font-size: 13px; color: #cdd6f4; line-height: 1.7; }
-    .term-comment { color: #6a9955; margin-bottom: 3px; }
-    .term-prompt { color: #79c0ff; font-weight: bold; }
-
-    /* Hero screenshot */
-    .hero-screenshot {
-      position: relative; z-index: 2;
-      width: min(960px, 92vw); margin: 0 auto;
-      border-radius: 20px;
-      box-shadow: 0 50px 130px rgba(0,0,0,.7), 0 0 0 1px rgba(255,255,255,.07), 0 0 80px rgba(0,87,255,.15);
-      animation: heroFloat 7s ease-in-out infinite, fadeInUp 1s .5s ease both;
-    }
-    .hero-screenshot img { 
-      width: 100%; display: block; border-radius: 20px;
-      transition: transform .4s cubic-bezier(.175,.885,.32,1.275);
-      position: relative; z-index: 1;
-    }
-    .hero-screenshot img:hover { transform: scale(1.3); cursor: zoom-in; z-index: 999; }
-    @keyframes heroFloat { 0%,100%{ transform:translateY(0); } 50%{ transform:translateY(-14px); } }
-
-    /* ── STATS BAR ── */
-    .stats-bar {
-      background: rgba(255,255,255,.03);
-      border-top: 1px solid rgba(255,255,255,.07);
-      border-bottom: 1px solid rgba(255,255,255,.07);
-      padding: 40px 60px;
-      display: flex; justify-content: center; gap: 80px; flex-wrap: wrap;
-    }
-    .stat { text-align: center; }
-    .stat-number {
-      font-size: 34px; font-weight: 900;
-      background: linear-gradient(135deg, #fff, var(--accent));
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-      line-height: 1;
-    }
-    .stat-label { font-size: 12px; color: var(--muted); font-weight: 500; margin-top: 6px; text-transform: uppercase; letter-spacing: .8px; }
-
-    /* ── SECTIONS ── */
-    section { padding: 110px 60px; }
-    .container { max-width: 1200px; margin: 0 auto; }
-
-    .section-tag {
-      display: inline-block; font-size: 11px; font-weight: 700;
-      letter-spacing: 2.5px; text-transform: uppercase; color: var(--accent);
-      background: rgba(0,212,255,.08); border: 1px solid rgba(0,212,255,.2);
-      padding: 5px 14px; border-radius: 100px; margin-bottom: 20px;
-    }
-
-    .section-title { font-size: clamp(28px, 4vw, 46px); font-weight: 900; letter-spacing: -1px; margin-bottom: 18px; line-height: 1.1; }
-    .section-sub { font-size: 17px; color: var(--muted); line-height: 1.75; max-width: 560px; }
-
-    /* ── FEATURES ── */
-    #features { background: linear-gradient(180deg, var(--bg) 0%, #071428 100%); }
-    .features-grid {
-      display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 20px; margin-top: 64px;
-    }
-    .feature-card {
-      background: var(--card-bg); border: 1px solid var(--card-border);
-      border-radius: var(--radius); padding: 36px 32px;
-      transition: transform .35s, background .35s, border-color .35s, box-shadow .35s;
-      position: relative; overflow: hidden;
-    }
-    .feature-card::before {
-      content:''; position:absolute; top:0; left:0; right:0; height:1px;
-      background: linear-gradient(90deg, transparent, var(--accent), transparent);
-      opacity:0; transition: opacity .35s;
-    }
-    .feature-card:hover { transform: translateY(-8px); background: rgba(255,255,255,.07); border-color: rgba(0,212,255,.2); box-shadow: 0 24px 64px rgba(0,0,0,.35), 0 0 40px rgba(0,87,255,.08); }
-    .feature-card:hover::before { opacity: 1; }
-
-    .feature-icon {
-      width: 54px; height: 54px; border-radius: 14px;
-      background: linear-gradient(135deg, rgba(0,212,255,.15), rgba(0,87,255,.15));
-      border: 1px solid rgba(0,212,255,.25);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 26px; margin-bottom: 22px;
-    }
-    .feature-title { font-size: 17px; font-weight: 700; margin-bottom: 10px; }
-    .feature-desc { font-size: 14px; color: var(--muted); line-height: 1.7; }
-
-    /* ── HOW IT WORKS ── */
-    #how-it-works { background: linear-gradient(180deg, #071428 0%, #0a1e40 100%); }
-    .steps-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 72px; align-items: center; margin-top: 64px; }
-    .steps-list { display: flex; flex-direction: column; gap: 0; }
-
-    .step {
-      display: flex; gap: 20px; align-items: flex-start;
-      padding: 28px 0; border-bottom: 1px solid rgba(255,255,255,.06);
-      transition: background .2s;
-    }
-    .step:last-child { border-bottom: none; }
-    .step-num {
-      width: 40px; height: 40px; border-radius: 50%; flex-shrink: 0;
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      display: flex; align-items: center; justify-content: center;
-      font-size: 15px; font-weight: 800;
-      box-shadow: 0 4px 16px rgba(0,87,255,.4);
-    }
-    .step-title { font-size: 16px; font-weight: 700; margin-bottom: 7px; }
-    .step-desc { font-size: 14px; color: var(--muted); line-height: 1.7; }
-
-    .steps-image { position: relative; transition: transform .4s cubic-bezier(.175,.885,.32,1.275); z-index: 1;}
-    .steps-image:hover { transform: scale(1.3) !important; cursor: zoom-in; z-index: 999; }
-    .steps-image img {
-      width: 100%; border-radius: var(--radius);
-      box-shadow: 0 32px 90px rgba(0,0,0,.6); border: 1px solid rgba(255,255,255,.08);
-    }
+    /* RESPONSIVE */
+    /* TERMINAL */
+    .hero-terminal { background:#111; border:1px solid rgba(255,255,255,.1); border-radius:12px; padding:12px 16px; margin:0 auto 80px; max-width:540px; text-align:left; box-shadow:0 20px 40px rgba(0,0,0,.4); }
+    .term-header { display:flex; gap:8px; margin-bottom:12px; align-items:center; }
+    .term-dot { width:12px; height:12px; border-radius:50%; }
+    .term-dot.r { background:#ff5f56; } .term-dot.y { background:#ffbd2e; } .term-dot.g { background:#27c93f; }
+    .term-title { margin-left:auto; margin-right:auto; color:rgba(255,255,255,.4); font-size:12px; font-weight:600; padding-right:44px; }
+    .term-body { font-family:'Courier New', monospace; font-size:14px; color:#fff; line-height:1.6; }
+    .term-comment { color:#a3be8c; margin-bottom:4px; font-size:13px; font-family:'Inter', sans-serif; }
+    .term-prompt { color:#88c0d0; font-weight:bold; }
+    .typewriter { overflow:hidden; white-space:nowrap; border-right:2px solid transparent; width:0; animation:typing 2.5s steps(35, end) 1s forwards, blink-caret .75s step-end infinite; display:inline-block; vertical-align:bottom; }
+    @keyframes typing { from { width:0; } to { width:100%; } }
+    @keyframes blink-caret { from, to { border-color:transparent; } 50% { border-color:#fff; } }
     
-    .img-glow { position: absolute; inset: -30px; background: radial-gradient(circle, rgba(0,87,255,.12) 0%, transparent 70%); pointer-events: none; }
-
-    /* Mobile guide */
-    .mobile-guide-wrap { display: flex; justify-content: center; margin-top: 80px; }
-    .mobile-guide-outer {
-      width: 100%; max-width: 360px;
-      border-radius: 28px;
-      box-shadow: 0 40px 100px rgba(0,0,0,.7), 0 0 0 1px rgba(255,255,255,.09), 0 0 60px rgba(0,87,255,.1);
-      animation: heroFloat 7s ease-in-out infinite;
-      z-index: 1; position: relative;
-    }
-    .mobile-guide-outer img { 
-      width: 100%; display: block; border-radius: 28px;
-      transition: transform .4s cubic-bezier(.175,.885,.32,1.275);
-      position: relative; z-index: 1;
-    }
-    .mobile-guide-outer img:hover { transform: scale(1.5); cursor: zoom-in; z-index: 999; }
-
-    /* ── SCREENSHOTS ── */
-    #screenshots { background: linear-gradient(180deg, #0a1e40 0%, #071428 100%); text-align: center; }
-    .screenshots-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 64px; }
-    .ss-card {
-      border-radius: var(--radius); overflow: hidden;
-      box-shadow: 0 20px 60px rgba(0,0,0,.5); border: 1px solid var(--card-border);
-      transition: transform .4s cubic-bezier(.175,.885,.32,1.275), box-shadow .4s;
-      position: relative; z-index: 1;
-    }
-    .ss-card:hover { transform: scale(1.35) !important; z-index: 999; cursor: zoom-in; box-shadow: 0 60px 120px rgba(0,0,0,.8); }
-    .ss-card img { width: 100%; display: block; }
-    .ss-label { padding: 14px 20px; background: rgba(255,255,255,.05); font-size: 13px; font-weight: 600; color: var(--muted); text-align: left; border-top: 1px solid var(--card-border); }
-
-    /* ── TERMINAL SECTION ── */
-    #terminal { background: linear-gradient(180deg, #071428 0%, #050d1a 100%); text-align: center; }
-    .terminal-img-wrapper {
-      width: 100%; max-width: 960px; margin: 56px auto 0;
-      border-radius: 16px;
-      box-shadow: 0 40px 100px rgba(0,0,0,.8), 0 0 0 1px rgba(255,255,255,.08), 0 0 60px rgba(0,212,255,.06);
-      animation: heroFloat 8s ease-in-out infinite;
-      z-index: 1; position: relative;
-    }
-    .terminal-img-wrapper img { 
-      width: 100%; display: block; border-radius: 16px;
-      transition: transform .4s cubic-bezier(.175,.885,.32,1.275);
-      position: relative; z-index: 1;
-    }
-    .terminal-img-wrapper img:hover { transform: scale(1.3); cursor: zoom-in; z-index: 999; }
-
-    /* ── DOWNLOAD ── */
-    #download { background: linear-gradient(180deg, #050d1a 0%, #071020 100%); text-align: center; }
-    #download .section-sub { margin-inline: auto; }
-    .download-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; margin-top: 64px; }
-
-    .download-card {
-      background: var(--card-bg); border: 1px solid var(--card-border);
-      border-radius: 24px; padding: 48px 36px;
-      text-align: center;
-      transition: transform .35s, background .35s, box-shadow .35s, border-color .35s;
-      position: relative; overflow: hidden;
-    }
-    .download-card::before {
-      content:''; position:absolute; inset:0;
-      background: linear-gradient(135deg, rgba(0,212,255,.05), rgba(0,87,255,.05));
-      opacity:0; transition: opacity .35s;
-    }
-    .download-card:hover { transform: translateY(-10px); background: rgba(255,255,255,.06); border-color: rgba(0,212,255,.25); box-shadow: 0 28px 72px rgba(0,0,0,.4), 0 0 40px rgba(0,87,255,.1); }
-    .download-card:hover::before { opacity: 1; }
-
-    .dl-icon { display: flex; justify-content: center; align-items: center; font-size: 52px; margin-bottom: 28px; color: #fff; }
-    .dl-title { font-size: 22px; font-weight: 800; margin-bottom: 10px; }
-    .dl-sub { font-size: 13.5px; color: var(--muted); margin-bottom: 28px; line-height: 1.6; }
-    .dl-btn {
-      display: inline-flex; align-items: center; gap: 8px;
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      color: #fff; padding: 13px 28px; border-radius: 100px;
-      font-size: 14px; font-weight: 700; text-decoration: none;
-      transition: transform .2s, box-shadow .2s;
-      box-shadow: 0 6px 24px rgba(0,87,255,.4);
-    }
-    .dl-btn:hover { transform: translateY(-3px); box-shadow: 0 12px 36px rgba(0,87,255,.55); }
-    .dl-badge { margin-top: 16px; font-size: 11.5px; color: var(--muted); }
-    .dl-badge a { color: var(--accent); text-decoration: none; }
-    .dl-badge a:hover { text-decoration: underline; }
-
-    .gh-box {
-      margin-top: 60px; padding: 44px 48px;
-      background: var(--card-bg); border: 1px solid var(--card-border);
-      border-radius: 24px; display: flex; align-items: center;
-      justify-content: space-between; gap: 24px; flex-wrap: wrap;
-    }
-    .gh-link {
-      display: inline-flex; align-items: center; gap: 10px;
-      background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.15);
-      color: #fff; padding: 14px 30px; border-radius: 100px;
-      font-size: 15px; font-weight: 700; text-decoration: none;
-      transition: background .2s, transform .2s;
-    }
-    .gh-link:hover { background: rgba(255,255,255,.14); transform: translateY(-2px); }
-
-    /* ── TROUBLESHOOTING ── */
-    #troubleshoot { background: linear-gradient(180deg, #071020 0%, #050d1a 100%); padding: 100px 60px; }
-    .faq-list { display: flex; flex-direction: column; gap: 14px; margin-top: 48px; }
-    details {
-      background: var(--card-bg); border: 1px solid var(--card-border);
-      border-radius: 16px; overflow: hidden;
-      transition: border-color .3s, background .3s;
-    }
-    details[open] { border-color: rgba(0,212,255,.25); background: rgba(255,255,255,.06); }
-    summary {
-      padding: 22px 28px; font-size: 15px; font-weight: 600;
-      cursor: pointer; display: flex; align-items: center; gap: 14px; list-style: none;
-      user-select: none; transition: color .2s;
-    }
-    summary::-webkit-details-marker { display: none; }
-    summary:hover { color: #fff; }
-    .faq-icon {
-      width: 34px; height: 34px; border-radius: 50%;
-      background: rgba(239,68,68,.12); border: 1px solid rgba(239,68,68,.25);
-      display: inline-flex; align-items: center; justify-content: center;
-      font-size: 16px; flex-shrink: 0;
-    }
-    .faq-chevron { margin-left: auto; font-size: 14px; color: var(--muted); transition: transform .3s; }
-    details[open] .faq-chevron { transform: rotate(180deg); }
-    .faq-body { padding: 0 28px 24px; border-top: 1px solid rgba(255,255,255,.06); }
-    .faq-body p { font-size: 14px; color: var(--muted); line-height: 1.75; margin-top: 18px; margin-bottom: 14px; }
-    .faq-fix { background: rgba(0,212,255,.06); border: 1px solid rgba(0,212,255,.15); border-radius: 12px; padding: 16px 20px; }
-    .faq-fix-title { font-size: 13px; font-weight: 700; color: var(--accent); margin-bottom: 10px; }
-    .faq-fix ol { font-size: 13.5px; color: rgba(255,255,255,.75); line-height: 1.85; padding-left: 18px; }
-    .faq-fix li { margin-bottom: 4px; }
-
-    /* ── FOOTER ── */
-    footer {
-      background: rgba(0,0,0,.4); border-top: 1px solid rgba(255,255,255,.06);
-      padding: 44px 60px; display: flex; align-items: center;
-      justify-content: space-between; gap: 20px; flex-wrap: wrap;
-    }
-    .footer-brand { display: flex; align-items: center; gap: 10px; }
-    .footer-brand img { width: 28px; height: 28px; border-radius: 6px; }
-    .footer-brand span { font-size: 15px; font-weight: 800; }
-    .footer-built { font-size: 13px; color: var(--muted); display: flex; align-items: center; gap: 6px; }
-    .footer-built a { color: var(--accent); text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; }
-    .footer-built a:hover { text-decoration: underline; }
-    .footer-copy { font-size: 12px; color: rgba(255,255,255,.3); }
-
-    /* ── SCROLL REVEAL ── */
-    .reveal {
-      opacity: 0; transform: translateY(40px);
-      transition: opacity .7s ease, transform .7s ease;
-    }
-    .reveal.visible { opacity: 1; transform: translateY(0); }
-    .reveal-left { opacity: 0; transform: translateX(-40px); transition: opacity .7s ease, transform .7s ease; }
-    .reveal-left.visible { opacity: 1; transform: translateX(0); }
-    .reveal-right { opacity: 0; transform: translateX(40px); transition: opacity .7s ease, transform .7s ease; }
-    .reveal-right.visible { opacity: 1; transform: translateX(0); }
-
-    /* stagger delays */
-    .delay-1 { transition-delay: .1s; }
-    .delay-2 { transition-delay: .2s; }
-    .delay-3 { transition-delay: .3s; }
-    .delay-4 { transition-delay: .4s; }
-    .delay-5 { transition-delay: .5s; }
-
-    /* ── KEYFRAMES ── */
-    @keyframes fadeInDown { from { opacity:0; transform:translateY(-20px); } to { opacity:1; transform:translateY(0); } }
-    @keyframes fadeInUp { from { opacity:0; transform:translateY(30px); } to { opacity:1; transform:translateY(0); } }
-
-    /* ── RESPONSIVE ── */
-    @media (max-width: 900px) {
-      nav { padding: 14px 24px; }
-      .nav-links { display: none; }
-      section { padding: 80px 24px; }
-      .stats-bar { padding: 36px 24px; gap: 40px; }
-      .steps-grid { grid-template-columns: 1fr; gap: 40px; }
-      .screenshots-grid { grid-template-columns: 1fr; }
-      .download-grid { grid-template-columns: 1fr; }
-      footer { flex-direction: column; text-align: center; padding: 36px 24px; }
-      .gh-box { flex-direction: column; text-align: center; }
-      #troubleshoot { padding: 80px 24px; }
+    @media(max-width:768px) {
+      nav { padding:16px 24px; }
+      .nav-links { display:none; }
+      section { padding:70px 24px; }
+      .stats-bar { padding:32px 24px; gap:40px; }
+      .steps-grid, .screenshots-grid { grid-template-columns:1fr; }
+      footer { flex-direction:column; text-align:center; padding:32px 24px; }
+      .hero-terminal { max-width: 90vw; }
+      .typewriter { font-size: 11.5px; }
     }
   </style>
 </head>
 <body>
 
-  <!-- NAVBAR -->
-  <nav id="navbar">
-    <a href="#" class="nav-logo">
-      <img src="images/app_icon.jpg" alt="WirelessConnect Logo" />
-      <span>WirelessConnect</span>
-    </a>
-    <ul class="nav-links">
-      <li><a href="#features">Features</a></li>
-      <li><a href="#how-it-works">How it Works</a></li>
-      <li><a href="#screenshots">Screenshots</a></li>
-      <li><a href="#terminal">Terminal</a></li>
-      <li><a href="#download">Download</a></li>
-    </ul>
-    <a href="#download" class="nav-cta">&#11015; Download Free</a>
-  </nav>
+<!-- NAVBAR -->
+<nav>
+  <a href="#" class="nav-logo">
+    <img src="images/app_icon.jpg" alt="WirelessConnect Logo" style="width: 32px; height: 32px; border-radius: 8px;" />
+    <span>WirelessConnect</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#features">Features</a></li>
+    <li><a href="#how-it-works">How it Works</a></li>
+    <li><a href="#screenshots">Screenshots</a></li>
+    <li><a href="#download">Download</a></li>
+  </ul>
+  <a href="#download" class="nav-cta">Download Free</a>
+</nav>
 
-  <!-- HERO -->
-  <section class="hero">
-    <div class="hero-mesh"></div>
-    <canvas id="particles-canvas"></canvas>
-
-    <div class="hero-content">
-      <div class="hero-badge"><span class="live-dot"></span> Free &amp; Open Source</div>
-      <h1>Control Your Android,<br />Wirelessly.</h1>
-      <p class="hero-sub">Mirror, control, and manage your Android device from your Mac, Windows, or Linux PC — no USB cable, no drivers, no hassle. Just connect and go.</p>
-      <div class="hero-btns">
-        <a href="#download" class="btn-primary">&#11015; Download Free</a>
-        <a href="#how-it-works" class="btn-secondary">&#9654; See How It Works</a>
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-gradient"></div>
+  <div class="hero-stars"></div>
+  <div class="hero-content">
+    <div class="hero-badge"><span class="dot"></span> Free &amp; Open Source</div>
+    <h1>Control Your Android,<br/>Wirelessly.</h1>
+    <p class="hero-sub">WirelessConnect lets you mirror, control, and manage your Android device from your PC — no USB cable, no drivers, no hassle. Just connect and go.</p>
+    <div class="hero-btns">
+      <a href="#download" class="btn-primary">&#11015; Download Free</a>
+      <a href="#how-it-works" class="btn-secondary">See How It Works</a>
+    </div>
+    
+    <div class="hero-terminal">
+      <div class="term-header">
+        <div class="term-dot r"></div><div class="term-dot y"></div><div class="term-dot g"></div>
+        <div class="term-title">Terminal &mdash; Install Dependencies</div>
       </div>
-
-      <div class="hero-terminal">
-        <div class="term-header">
-          <div class="term-dot r"></div>
-          <div class="term-dot y"></div>
-          <div class="term-dot g"></div>
-          <div class="term-title">Terminal — Install Dependencies</div>
-        </div>
-        <div class="term-body">
-          <div class="term-comment"># macOS (Homebrew)</div>
-          <div><span class="term-prompt">~ $</span> brew install android-platform-tools scrcpy</div>
-          <div class="term-comment" style="margin-top:12px;"># Linux (Ubuntu/Debian)</div>
-          <div><span class="term-prompt">~ $</span> sudo apt install adb scrcpy</div>
-          <div class="term-comment" style="margin-top:12px;"># Windows (using Scoop)</div>
-          <div><span class="term-prompt" style="color:#d08770;">C:\></span> scoop install adb scrcpy</div>
-        </div>
+      <div class="term-body">
+        <div class="term-comment"># macOS (Homebrew)</div>
+        <div><span class="term-prompt">~ $</span> brew install android-platform-tools scrcpy</div>
+        
+        <div class="term-comment" style="margin-top: 12px;"># Linux (Ubuntu/Debian)</div>
+        <div><span class="term-prompt">~ $</span> sudo apt install adb scrcpy</div>
+        
+        <div class="term-comment" style="margin-top: 12px;"># Windows (using Scoop)</div>
+        <div><span class="term-prompt" style="color:#d08770;">C:\></span> scoop install adb scrcpy</div>
       </div>
     </div>
-
-    <div class="hero-screenshot">
-      <img src="images/app_screenshot.png" alt="WirelessConnect App Screenshot" />
-    </div>
-  </section>
-
-  <!-- STATS BAR -->
-  <div class="stats-bar">
-    <div class="stat reveal"><div class="stat-number">0ms</div><div class="stat-label">Near-Zero Latency</div></div>
-    <div class="stat reveal delay-1"><div class="stat-number">3</div><div class="stat-label">Platforms Supported</div></div>
-    <div class="stat reveal delay-2"><div class="stat-number">USB-Free</div><div class="stat-label">100% Wireless</div></div>
-    <div class="stat reveal delay-3"><div class="stat-number">Free</div><div class="stat-label">No Subscription</div></div>
   </div>
+  <div class="hero-screenshot">
+    <img src="images/app_screenshot.png" alt="WirelessConnect App Screenshot" />
+  </div>
+</section>
 
-  <!-- FEATURES -->
-  <section id="features">
-    <div class="container">
-      <div class="reveal">
-        <div class="section-tag">Features</div>
-        <h2 class="section-title">Everything you need,<br />nothing you don't.</h2>
-        <p class="section-sub">A clean, powerful tool built for developers, testers, and power users who want full control over their Android device.</p>
+<!-- STATS -->
+<div class="stats-bar">
+  <div class="stat"><div class="stat-number">0ms</div><div class="stat-label">Near-Zero Latency</div></div>
+  <div class="stat"><div class="stat-number">3</div><div class="stat-label">Platforms Supported</div></div>
+  <div class="stat"><div class="stat-number">USB-Free</div><div class="stat-label">100% Wireless</div></div>
+  <div class="stat"><div class="stat-number">Free</div><div class="stat-label">No Subscription</div></div>
+</div>
+
+<!-- FEATURES -->
+<section id="features">
+  <div class="container">
+    <div class="section-tag">Features</div>
+    <h2 class="section-title">Everything you need,<br/>nothing you don't.</h2>
+    <p class="section-sub">A clean, powerful tool built for developers, testers, and power users who want full control over their Android device.</p>
+    <div class="features-grid">
+      <div class="feature-card"><div class="feature-icon">&#128225;</div><div class="feature-title">Wireless Pairing</div><div class="feature-desc">Connect via Wi-Fi using Android's built-in Wireless Debugging. No USB cable ever needed. Works over your local network in seconds.</div></div>
+      <div class="feature-card"><div class="feature-icon">&#128421;&#65039;</div><div class="feature-title">Live Screen Mirror</div><div class="feature-desc">See your phone screen live on your desktop powered by scrcpy — one of the fastest, lowest-latency screen mirroring solutions available.</div></div>
+      <div class="feature-card"><div class="feature-icon">&#128241;</div><div class="feature-title">Multi-Device Support</div><div class="feature-desc">Connect and manage multiple Android devices simultaneously. Switch between them with a single click from the clean sidebar panel.</div></div>
+      <div class="feature-card"><div class="feature-icon">&#128267;</div><div class="feature-title">Device Info at a Glance</div><div class="feature-desc">See your device's model, Android version, battery level, and connection status — all in one clean, real-time dashboard.</div></div>
+      <div class="feature-card"><div class="feature-icon">&#127919;</div><div class="feature-title">Step-by-Step Pairing</div><div class="feature-desc">Not a developer? No problem. The guided pairing wizard walks you through every step with clear, simple instructions.</div></div>
+      <div class="feature-card"><div class="feature-icon">&#127760;</div><div class="feature-title">Cross-Platform</div><div class="feature-desc">Available natively for macOS, Windows, and Linux. One consistent experience across all your machines.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how-it-works">
+  <div class="container">
+    <div class="steps-grid">
+      <div>
+        <div class="section-tag">How It Works</div>
+        <h2 class="section-title">Connect in under<br/>60 seconds.</h2>
+        <p class="section-sub" style="margin-bottom:48px;">Follow these simple steps and your phone will be on your screen in no time.</p>
+        <div class="steps-list">
+          <div class="step"><div class="step-num">1</div><div><div class="step-title">Enable Developer Options</div><div class="step-desc">On your Android phone, go to Settings &rarr; About Phone and tap "Build number" 7 times to unlock Developer Options.</div></div></div>
+          <div class="step"><div class="step-num">2</div><div><div class="step-title">Turn On Wireless Debugging</div><div class="step-desc">Go to Settings &rarr; Developer Options &rarr; Wireless Debugging and switch it on. Make sure your phone and PC are on the same Wi-Fi.</div></div></div>
+          <div class="step"><div class="step-num">3</div><div><div class="step-title">Pair with Pairing Code</div><div class="step-desc">Tap "Pair device with pairing code" on your phone, then enter the IP, Pair Port, and 6-digit code into WirelessConnect.</div></div></div>
+          <div class="step"><div class="step-num">4</div><div><div class="step-title">Open Live Screen &amp; Control</div><div class="step-desc">Hit "Pair &amp; Connect" — your device appears in the sidebar. Click "Open Live Screen" and start mirroring!</div></div></div>
+        </div>
       </div>
-      <div class="features-grid">
-        <div class="feature-card reveal delay-1">
-          <div class="feature-icon">📡</div>
-          <div class="feature-title">Wireless Pairing</div>
-          <div class="feature-desc">Connect via Wi-Fi using Android's built-in Wireless Debugging. No USB cable ever needed. Works over your local network in seconds.</div>
-        </div>
-        <div class="feature-card reveal delay-2">
-          <div class="feature-icon">🖥️</div>
-          <div class="feature-title">Live Screen Mirror</div>
-          <div class="feature-desc">See your phone screen live on your desktop — powered by scrcpy, one of the fastest, lowest-latency screen mirroring solutions available.</div>
-        </div>
-        <div class="feature-card reveal delay-3">
-          <div class="feature-icon">📱</div>
-          <div class="feature-title">Multi-Device Support</div>
-          <div class="feature-desc">Connect and manage multiple Android devices simultaneously. Switch between them with a single click from the clean sidebar panel.</div>
-        </div>
-        <div class="feature-card reveal delay-1">
-          <div class="feature-icon">🔌</div>
-          <div class="feature-title">Device Info at a Glance</div>
-          <div class="feature-desc">See your device model, Android version, battery level, and connection status — all in one clean, real-time dashboard.</div>
-        </div>
-        <div class="feature-card reveal delay-2">
-          <div class="feature-icon">🎯</div>
-          <div class="feature-title">Step-by-Step Pairing</div>
-          <div class="feature-desc">Not a developer? No problem. The guided pairing wizard walks you through every step with clear, simple instructions.</div>
-        </div>
-        <div class="feature-card reveal delay-3">
-          <div class="feature-icon">🌐</div>
-          <div class="feature-title">Cross-Platform</div>
-          <div class="feature-desc">Available natively for macOS, Windows, and Linux. One consistent, beautiful experience across all your machines.</div>
-        </div>
+      <div class="steps-image">
+        <div class="img-glow"></div>
+        <img src="images/pairing_step1.png" alt="Pairing Step Screenshot" />
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- HOW IT WORKS -->
-  <section id="how-it-works">
-    <div class="container">
-      <div class="steps-grid">
-        <div class="reveal-left">
-          <div class="section-tag">How It Works</div>
-          <h2 class="section-title">Connect in under<br />60 seconds.</h2>
-          <p class="section-sub" style="margin-bottom:48px;">Follow these simple steps and your phone will be on your screen in no time.</p>
-          <div class="steps-list">
-            <div class="step">
-              <div class="step-num">1</div>
-              <div>
-                <div class="step-title">Enable Developer Options</div>
-                <div class="step-desc">Go to Settings → About Phone and tap "Build number" 7 times to unlock Developer Options on your Android phone.</div>
-              </div>
-            </div>
-            <div class="step">
-              <div class="step-num">2</div>
-              <div>
-                <div class="step-title">Turn On Wireless Debugging</div>
-                <div class="step-desc">Go to Settings → Developer Options → Wireless Debugging and switch it on. Make sure your phone and PC are on the same Wi-Fi.</div>
-              </div>
-            </div>
-            <div class="step">
-              <div class="step-num">3</div>
-              <div>
-                <div class="step-title">Pair with Pairing Code</div>
-                <div class="step-desc">Tap "Pair device with pairing code" on your phone, then enter the IP, Pair Port, and 6-digit code into WirelessConnect.</div>
-              </div>
-            </div>
-            <div class="step">
-              <div class="step-num">4</div>
-              <div>
-                <div class="step-title">Open Live Screen &amp; Control</div>
-                <div class="step-desc">Hit "Pair &amp; Connect" — your device appears in the sidebar. Click "Open Live Screen" and start mirroring!</div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="steps-image reveal-right">
-          <div class="img-glow"></div>
-          <img src="images/pairing_step1.png" alt="Pairing Step Screenshot" />
-        </div>
-      </div>
-
-      <!-- Mobile Debug Guide -->
-      <div class="mobile-guide-wrap reveal">
-        <div class="mobile-guide-outer">
-          <img src="assets/wireless_debug_guide.jpg" alt="Wireless Debugging Guide" />
-        </div>
+<!-- SCREENSHOTS -->
+<section id="screenshots">
+  <div class="container">
+    <div class="section-tag">Screenshots</div>
+    <h2 class="section-title">A beautiful app<br/>that stays out of your way.</h2>
+    <div class="screenshots-grid">
+      <div class="ss-card"><img src="images/app_screenshot.png" alt="Main Dashboard" /><div class="ss-label">&#128241; Main Dashboard — Device connected &amp; Live Mirror active</div></div>
+      <div class="ss-card"><img src="images/pairing_step1.png" alt="Pairing Guide" /><div class="ss-label">&#128279; Step-by-step pairing guide — Easy setup wizard</div></div>
+      <div class="ss-card"><img src="images/pairing_step2.png" alt="Enter credentials" /><div class="ss-label">&#9999;&#65039; Enter credentials — IP, port and 6-digit code</div></div>
+      <div class="ss-card" style="background:linear-gradient(135deg,rgba(0,198,255,.08),rgba(0,114,255,.12));display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:260px;padding:40px;">
+        <div style="font-size:56px;margin-bottom:16px;">&#128640;</div>
+        <div style="font-size:18px;font-weight:700;margin-bottom:8px;">More features coming</div>
+        <div style="font-size:13px;color:var(--text-muted);text-align:center;max-width:240px;">File transfer, clipboard sync, and more — stay tuned for updates.</div>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- SCREENSHOTS -->
-  <section id="screenshots">
-    <div class="container">
-      <div class="reveal">
-        <div class="section-tag">Screenshots</div>
-        <h2 class="section-title">A beautiful app<br />that stays out of your way.</h2>
-        <p class="section-sub" style="margin-inline:auto;">Hover over any screenshot to zoom in for a closer look.</p>
+<!-- DOWNLOAD -->
+<section id="download">
+  <div class="container">
+    <div class="section-tag">Download</div>
+    <h2 class="section-title">Get WirelessConnect<br/>for your platform.</h2>
+    <p class="section-sub">Free forever. No account required. Just download, install, and connect.</p>
+    <div class="download-grid">
+      <div class="download-card">
+        <div class="dl-icon">&#63743;</div>
+        <div class="dl-title">macOS</div>
+        <div class="dl-sub">macOS 12 Monterey or later<br/>Apple Silicon &amp; Intel supported</div>
+        <a href="https://github.com/ranasheikh64/wirelessconnector/releases/download/v1.0.0/WirelessConnect_Mac.dmg" class="dl-btn">&#11015; Download for Mac</a>
+        <div class="dl-badge">Requires adb &amp; scrcpy &middot; <a href="https://github.com/ranasheikh64/wirelessconnector#macos">Install guide &rarr;</a></div>
       </div>
-      <div class="screenshots-grid" style="margin-top:64px;">
-        <div class="ss-card reveal delay-1">
-          <img src="images/app_screenshot.png" alt="Main Dashboard" />
-          <div class="ss-label">📱 Main Dashboard — Device connected &amp; Live Mirror active</div>
-        </div>
-        <div class="ss-card reveal delay-2">
-          <img src="images/pairing_step1.png" alt="Pairing Guide" />
-          <div class="ss-label">🔗 Step-by-step pairing guide — Easy setup wizard</div>
-        </div>
-        <div class="ss-card reveal delay-3">
-          <img src="images/pairing_step2.png" alt="Enter credentials" />
-          <div class="ss-label">✏️ Enter credentials — IP, port and 6-digit code</div>
-        </div>
-        <div class="ss-card reveal delay-4" style="background:linear-gradient(135deg,rgba(0,212,255,.06),rgba(0,87,255,.1));display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:280px;padding:48px;">
-          <div style="font-size:56px;margin-bottom:18px;">🚀</div>
-          <div style="font-size:19px;font-weight:800;margin-bottom:10px;">More features coming</div>
-          <div style="font-size:14px;color:var(--muted);text-align:center;max-width:240px;line-height:1.65;">File transfer, clipboard sync, and more — stay tuned for updates.</div>
-        </div>
+      <div class="download-card">
+        <div class="dl-icon">&#129695;</div>
+        <div class="dl-title">Windows</div>
+        <div class="dl-sub">Windows 10 / 11<br/>64-bit (x64) supported</div>
+        <a href="https://github.com/ranasheikh64/wirelessconnector/releases/download/v1.0.0/WirelessConnect-windows.zip" class="dl-btn">&#11015; Download for Windows</a>
+        <div class="dl-badge">Requires scrcpy for Windows &middot; <a href="https://github.com/ranasheikh64/wirelessconnector#windows">Install guide &rarr;</a></div>
+      </div>
+      <div class="download-card">
+        <div class="dl-icon">&#128039;</div>
+        <div class="dl-title">Linux</div>
+        <div class="dl-sub">Ubuntu 20.04+ / Debian-based<br/>x64 supported</div>
+        <a href="https://github.com/ranasheikh64/wirelessconnector/releases/download/v1.0.0/WirelessConnect-linux.zip" class="dl-btn">&#11015; Download for Linux</a>
+        <div class="dl-badge">Requires adb &amp; scrcpy &middot; <a href="https://github.com/ranasheikh64/wirelessconnector#linux">Install guide &rarr;</a></div>
       </div>
     </div>
-  </section>
-
-  <!-- TERMINAL SECTION -->
-  <section id="terminal">
-    <div class="container">
-      <div class="reveal" style="text-align:center;">
-        <div class="section-tag" style="background:rgba(0,255,136,.08);border-color:rgba(0,255,136,.2);color:#00ff88;">Interactive Terminal</div>
-        <h2 class="section-title">Interactive terminal<br />for every type of log</h2>
-        <p class="section-sub" style="margin-inline:auto;">Monitor ADB logs, debug issues, and run commands directly from the built-in terminal. Full visibility into every device event.</p>
+    <div class="gh-box">
+      <div>
+        <div style="font-size:20px;font-weight:700;margin-bottom:6px;">Open Source on GitHub</div>
+        <div style="font-size:14px;color:var(--text-muted);">View source code, report issues, or contribute to the project.</div>
       </div>
-      <div class="terminal-img-wrapper reveal delay-2">
-        <img src="assets/terminal.png" alt="Interactive Terminal" />
-      </div>
-    </div>
-  </section>
-
-  <!-- DOWNLOAD -->
-  <section id="download">
-    <div class="container">
-      <div class="reveal" style="text-align:center;">
-        <div class="section-tag">Download</div>
-        <h2 class="section-title">Get WirelessConnect<br />for your platform.</h2>
-        <p class="section-sub">Free forever. No account required. Just download, install, and connect.</p>
-      </div>
-      <div class="download-grid">
-        <!-- macOS -->
-        <div class="download-card reveal delay-1">
-          <div class="dl-icon">
-            <svg viewBox="0 0 384 512" fill="currentColor" style="width:52px;height:52px;">
-              <path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/>
-            </svg>
-          </div>
-          <div class="dl-title">macOS</div>
-          <div class="dl-sub">macOS 12 Monterey or later<br />Apple Silicon &amp; Intel supported</div>
-          <a href="https://github.com/ranasheikh64/wirelessconnector/releases/download/v1.0.0/WirelessConnect-macOS.zip" class="dl-btn">&#11015; Download for Mac</a>
-          <div class="dl-badge">Requires adb &amp; scrcpy &middot; <a href="https://github.com/ranasheikh64/wirelessconnector#macos">Install guide &rarr;</a></div>
-        </div>
-        <!-- Windows -->
-        <div class="download-card reveal delay-2">
-          <div class="dl-icon">
-            <svg viewBox="0 0 448 512" fill="currentColor" style="width:52px;height:52px;">
-              <path d="M0 93.7l183.6-25.3v177.4H0V93.7zm0 324.6l183.6 25.3V268.4H0v149.9zm203.8 28L448 480V268.4H203.8v177.9zm0-380.6v180.1H448V32L203.8 65.7z"/>
-            </svg>
-          </div>
-          <div class="dl-title">Windows</div>
-          <div class="dl-sub">Windows 10 / 11<br />64-bit (x64) supported</div>
-          <a href="https://github.com/ranasheikh64/wirelessconnector/releases/download/v1.0.0/WirelessConnect-windows.zip" class="dl-btn">&#11015; Download for Windows</a>
-          <div class="dl-badge">Requires scrcpy for Windows &middot; <a href="https://github.com/ranasheikh64/wirelessconnector#windows">Install guide &rarr;</a></div>
-        </div>
-        <!-- Linux -->
-        <div class="download-card reveal delay-3">
-          <div class="dl-icon">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/3/35/Tux.svg" alt="Linux Tux" style="width:52px;height:52px;object-fit:contain;" />
-          </div>
-          <div class="dl-title">Linux</div>
-          <div class="dl-sub">Ubuntu 20.04+ / Debian-based<br />x64 supported</div>
-          <a href="https://github.com/ranasheikh64/wirelessconnector/releases/download/v1.0.0/WirelessConnect-linux.zip" class="dl-btn">&#11015; Download for Linux</a>
-          <div class="dl-badge">Requires adb &amp; scrcpy &middot; <a href="https://github.com/ranasheikh64/wirelessconnector#linux">Install guide &rarr;</a></div>
-        </div>
-      </div>
-
-      <div class="gh-box reveal">
-        <div>
-          <div style="font-size:21px;font-weight:800;margin-bottom:8px;">Open Source on GitHub</div>
-          <div style="font-size:14px;color:var(--muted);">View source code, report issues, or contribute to the project.</div>
-        </div>
-        <a href="https://github.com/ranasheikh64/wirelessconnector" target="_blank" class="gh-link">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2A10 10 0 0 0 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0 0 12 2z"/></svg>
-          View on GitHub
-        </a>
-      </div>
-    </div>
-  </section>
-
-  <!-- TROUBLESHOOTING -->
-  <section id="troubleshoot">
-    <div class="container" style="max-width:860px;">
-      <div class="reveal">
-        <div class="section-tag" style="background:rgba(239,68,68,.08);border-color:rgba(239,68,68,.2);color:#f87171;">Troubleshooting</div>
-        <h2 class="section-title">Having trouble?<br />We've got you.</h2>
-        <p class="section-sub">Here are the most common issues and exactly how to fix them.</p>
-      </div>
-      <div class="faq-list">
-        <details class="reveal delay-1">
-          <summary>
-            <span class="faq-icon">🔐</span>
-            "Pairing failed. Check the 6-digit code." error
-            <span class="faq-chevron"><i class="fas fa-chevron-down"></i></span>
-          </summary>
-          <div class="faq-body">
-            <p>The pairing code expires within <strong>60–90 seconds</strong>. If you were slow entering the details, the code expired.</p>
-            <div class="faq-fix">
-              <div class="faq-fix-title">✅ Fix:</div>
-              <ol>
-                <li>On your phone, tap <strong>"Pair device with pairing code"</strong> again to get a fresh code.</li>
-                <li>Quickly fill in the new IP, Pair Port, Pairing Code, and Debug Port in the app.</li>
-                <li>Hit <strong>"Pair &amp; Connect"</strong> immediately.</li>
-              </ol>
-            </div>
-          </div>
-        </details>
-
-        <details class="reveal delay-2">
-          <summary>
-            <span class="faq-icon">📱</span>
-            "error: protocol fault (couldn't read status message)"
-            <span class="faq-chevron"><i class="fas fa-chevron-down"></i></span>
-          </summary>
-          <div class="faq-body">
-            <p>This is a generic ADB error that happens when the app tries to connect to your phone's IP and Port, but the connection fails or the phone doesn't respond.</p>
-            <div class="faq-fix">
-              <div class="faq-fix-title">✅ Fixes:</div>
-              <ol>
-                <li><strong>Wrong Port (Most Common):</strong> When you tap "Pair device with pairing code", the popup shows a <strong>different port</strong> than the main screen! Use the popup port for pairing.</li>
-                <li><strong>Not on the same Wi-Fi:</strong> Ensure both devices are on the exact same Wi-Fi. Some routers have "AP Isolation" enabled. Try a mobile hotspot to test.</li>
-                <li><strong>macOS Firewall:</strong> Try disabling your firewall temporarily. On macOS 15 (Sequoia), check Local Network permissions in System Settings → Privacy &amp; Security.</li>
-                <li><strong>Check Reachability:</strong> Open Terminal and run <code>ping [YOUR_PHONE_IP]</code>. "Request timeout" means your Mac can't see the phone at all.</li>
-              </ol>
-            </div>
-          </div>
-        </details>
-
-        <details class="reveal delay-3">
-          <summary>
-            <span class="faq-icon">💻</span>
-            PC on Ethernet, Phone on Wi-Fi (Different Networks)
-            <span class="faq-chevron"><i class="fas fa-chevron-down"></i></span>
-          </summary>
-          <div class="faq-body">
-            <p>If your PC is on Ethernet and phone is on Wi-Fi, they can communicate <strong>only if on the same router/subnet</strong>. Here are the best workarounds:</p>
-            <div class="faq-fix">
-              <div class="faq-fix-title">✅ Solutions:</div>
-              <ol>
-                <li><strong>Virtual LAN (Recommended):</strong> Install <strong>Tailscale</strong> or <strong>ZeroTier</strong> on both devices. They assign a virtual IP so you can connect from anywhere.</li>
-                <li><strong>PC Mobile Hotspot:</strong> If your PC has Wi-Fi, enable "Mobile Hotspot" and connect your phone directly to it for a direct 0ms connection.</li>
-                <li><strong>USB Wi-Fi Adapter:</strong> Buy a cheap USB Wi-Fi dongle (~$5), enable Mobile Hotspot from the PC, and connect your phone.</li>
-                <li><strong>USB Tethering (Temporary):</strong> Plug your phone into the PC via USB and enable "USB Tethering" in network settings to create a direct local network.</li>
-              </ol>
-            </div>
-          </div>
-        </details>
-      </div>
-    </div>
-  </section>
-
-  <!-- FOOTER -->
-  <footer>
-    <div class="footer-brand">
-      <img src="images/app_icon.jpg" alt="WirelessConnect Logo" />
-      <span>WirelessConnect</span>
-    </div>
-    <div class="footer-built">
-      Built by
-      <a href="https://ranasheikh64.github.io/jronix-software-solutions/" target="_blank">
-        <img src="images/jronix_logo.png" alt="Jronix Logo" style="width:18px;height:18px;border-radius:4px;" />
-        Jronix – Software Solutions
-        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+      <a href="https://github.com/ranasheikh64/wirelessconnector" target="_blank" class="gh-link">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2A10 10 0 0 0 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0 0 12 2z"/></svg>
+        View on GitHub
       </a>
     </div>
-    <div class="footer-copy">&copy; 2025 WirelessConnect. All rights reserved.</div>
-  </footer>
+  </div>
+</section>
 
-  <script>
-    // ── NAVBAR SCROLL EFFECT ──
-    const navbar = document.getElementById('navbar');
-    window.addEventListener('scroll', () => {
-      navbar.classList.toggle('scrolled', window.scrollY > 40);
-    });
+<!-- TROUBLESHOOTING -->
+<section id="troubleshoot" style="background:linear-gradient(180deg,#071b4a 0%,#0a2a6e 100%); padding:80px 48px;">
+  <div style="max-width:860px; margin:0 auto;">
+    <div style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#29b6f6;margin-bottom:10px;">Troubleshooting</div>
+    <h2 style="font-size:clamp(24px,3.5vw,36px);font-weight:800;letter-spacing:-.8px;margin-bottom:8px;">Having trouble? We've got you.</h2>
+    <p style="font-size:16px;color:rgba(255,255,255,.65);line-height:1.65;margin-bottom:44px;">Here are the most common issues and how to fix them.</p>
 
-    // ── PARTICLE CANVAS ──
-    (function() {
-      const canvas = document.getElementById('particles-canvas');
-      const ctx = canvas.getContext('2d');
-      let W, H, particles = [];
+    <div style="display:flex;flex-direction:column;gap:16px;">
 
-      function resize() {
-        W = canvas.width = canvas.offsetWidth;
-        H = canvas.height = canvas.offsetHeight;
-      }
-      resize();
-      window.addEventListener('resize', () => { resize(); initParticles(); });
+      <!-- Issue 1 -->
+      <details style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.10);border-radius:16px;overflow:hidden;">
+        <summary style="padding:20px 24px;font-size:15px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:12px;list-style:none;">
+          <span style="width:32px;height:32px;border-radius:50%;background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.30);display:inline-flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;">&#128274;</span>
+          "Pairing failed. Check the 6-digit code." error
+        </summary>
+        <div style="padding:0 24px 20px;border-top:1px solid rgba(255,255,255,.08);margin-top:0;">
+          <p style="font-size:14px;color:rgba(255,255,255,.65);line-height:1.7;margin-top:16px;margin-bottom:12px;">The pairing code expires within <strong>60–90 seconds</strong>. If you were slow entering the details, the code expired.</p>
+          <div style="background:rgba(41,182,246,.08);border:1px solid rgba(41,182,246,.20);border-radius:10px;padding:14px 16px;">
+            <p style="font-size:13px;font-weight:600;color:#29b6f6;margin-bottom:8px;">&#9989; Fix:</p>
+            <ol style="font-size:13px;color:rgba(255,255,255,.75);line-height:1.8;padding-left:18px;">
+              <li>On your phone, tap <strong>"Pair device with pairing code"</strong> again to get a fresh code.</li>
+              <li>Quickly fill in the new IP, Pair Port, Pairing Code, and Debug Port in the app.</li>
+              <li>Hit <strong>"Pair &amp; Connect"</strong> immediately.</li>
+            </ol>
+          </div>
+        </div>
+      </details>
 
-      function Particle() {
-        this.x = Math.random() * W;
-        this.y = Math.random() * H;
-        this.r = Math.random() * 1.5 + 0.3;
-        this.dx = (Math.random() - 0.5) * 0.3;
-        this.dy = -(Math.random() * 0.4 + 0.1);
-        this.alpha = Math.random() * 0.6 + 0.1;
-        this.color = Math.random() > 0.5 ? '0,212,255' : '0,87,255';
-      }
+      <!-- Issue 2 -->
+      <details style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.10);border-radius:16px;overflow:hidden;">
+        <summary style="padding:20px 24px;font-size:15px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:12px;list-style:none;">
+          <span style="width:32px;height:32px;border-radius:50%;background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.30);display:inline-flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;">&#128241;</span>
+          "error: protocol fault (couldn't read status message)"
+        </summary>
+        <div style="padding:0 24px 20px;border-top:1px solid rgba(255,255,255,.08);margin-top:0;">
+          <p style="font-size:14px;color:rgba(255,255,255,.65);line-height:1.7;margin-top:16px;margin-bottom:12px;">This is a generic ADB error on macOS. It happens when the app tries to connect to your phone's IP and Port, but the connection fails or the phone doesn't respond. ADB shows this "protocol fault" instead of a direct Connection Refused error.</p>
+          <div style="background:rgba(41,182,246,.08);border:1px solid rgba(41,182,246,.20);border-radius:10px;padding:14px 16px;">
+            <p style="font-size:13px;font-weight:600;color:#29b6f6;margin-bottom:8px;">&#9989; Fixes:</p>
+            <ol style="font-size:13px;color:rgba(255,255,255,.75);line-height:1.8;padding-left:18px;">
+              <li><strong>Wrong Port (Most Common):</strong> The main Wireless Debugging screen shows an IP and Port. But when you tap "Pair device with pairing code", the popup shows a <strong>different port</strong>! You MUST use the port shown in the popup for pairing.</li>
+              <li><strong>Not on the same Wi-Fi:</strong> Ensure both your Mac and Android phone are on the exact same Wi-Fi network. Some routers have "AP Isolation" or "Guest Network" enabled, which blocks devices from communicating. Try a mobile hotspot to test.</li>
+              <li><strong>macOS Firewall & Local Network Permission:</strong> If your Mac's firewall is on (System Settings > Network > Firewall), try disabling it temporarily. If you are on macOS 15 (Sequoia), ensure the app has Local Network access in System Settings > Privacy & Security > Local Network.</li>
+              <li><strong>Check Network Reachability:</strong> Open your Mac Terminal and type <code>ping [YOUR_PHONE_IP]</code>. If it says "Request timeout", your Mac cannot reach the phone at all.</li>
+            </ol>
+          </div>
+        </div>
+      </details>
 
-      function initParticles() {
-        particles = [];
-        const count = Math.floor((W * H) / 18000);
-        for (let i = 0; i < count; i++) particles.push(new Particle());
-      }
-      initParticles();
+      <!-- Issue 3 -->
+      <details style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.10);border-radius:16px;overflow:hidden;">
+        <summary style="padding:20px 24px;font-size:15px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:12px;list-style:none;">
+          <span style="width:32px;height:32px;border-radius:50%;background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.30);display:inline-flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;">&#128187;</span>
+          PC on Ethernet, Phone on Wi-Fi (Different Networks)
+        </summary>
+        <div style="padding:0 24px 20px;border-top:1px solid rgba(255,255,255,.08);margin-top:0;">
+          <p style="font-size:14px;color:rgba(255,255,255,.65);line-height:1.7;margin-top:16px;margin-bottom:12px;">If your PC is connected via an Ethernet cable and your phone is on Wi-Fi, they can connect <strong>only if they are on the same router (same subnet)</strong>. If they are on different networks, they cannot communicate natively. Here are the best workarounds:</p>
+          <div style="background:rgba(41,182,246,.08);border:1px solid rgba(41,182,246,.20);border-radius:10px;padding:14px 16px;">
+            <p style="font-size:13px;font-weight:600;color:#29b6f6;margin-bottom:8px;">&#9989; Solutions:</p>
+            <ol style="font-size:13px;color:rgba(255,255,255,.75);line-height:1.8;padding-left:18px;">
+              <li><strong>Virtual LAN (Software - Recommended):</strong> Install a free Virtual Private Network tool like <strong>Tailscale</strong> or <strong>ZeroTier</strong> on both your PC and Phone. They will assign a virtual IP to your phone (e.g., <code>100.x.x.x</code>). Enter this virtual IP in WirelessConnect to connect from anywhere!</li>
+              <li><strong>PC Mobile Hotspot (Best Performance):</strong> If your PC has a Wi-Fi card, turn on "Mobile Hotspot" in your PC's network settings. Connect your Android phone directly to the PC's hotspot. This ensures a direct connection with 0ms latency!</li>
+              <li><strong>USB Wi-Fi Adapter (Hardware):</strong> If your desktop PC lacks a Wi-Fi card, you can buy a cheap USB Wi-Fi dongle ($5). Plug it in, enable Mobile Hotspot from the PC, and connect your phone directly.</li>
+              <li><strong>USB Tethering (Temporary Bridge):</strong> Connect your phone to the PC via USB temporarily and turn on "USB Tethering" in your phone's network settings. This creates a direct local network between them. You can then connect via the app using the new tethering IP.</li>
+            </ol>
+          </div>
+        </div>
+      </details>
+      
+    </div>
+  </div>
+</section>
 
-      function draw() {
-        ctx.clearRect(0, 0, W, H);
-        particles.forEach(p => {
-          ctx.beginPath();
-          ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(${p.color},${p.alpha})`;
-          ctx.fill();
-          p.x += p.dx; p.y += p.dy;
-          if (p.y < -2) { p.y = H + 2; p.x = Math.random() * W; }
-          if (p.x < -2) p.x = W + 2;
-          if (p.x > W + 2) p.x = -2;
-        });
-        requestAnimationFrame(draw);
-      }
-      draw();
-    })();
-
-    // ── SCROLL REVEAL ──
-    const revealEls = document.querySelectorAll('.reveal, .reveal-left, .reveal-right');
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(e => {
-        if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); }
-      });
-    }, { threshold: 0.12 });
-    revealEls.forEach(el => observer.observe(el));
-
-    // ── SMOOTH ACTIVE NAV LINK ──
-    const sections = document.querySelectorAll('section[id], div[id]');
-    const navLinks = document.querySelectorAll('.nav-links a');
-    const sectionObserver = new IntersectionObserver((entries) => {
-      entries.forEach(e => {
-        if (e.isIntersecting) {
-          navLinks.forEach(a => a.style.color = '');
-          const link = document.querySelector(`.nav-links a[href="#${e.target.id}"]`);
-          if (link) link.style.color = '#fff';
-        }
-      });
-    }, { threshold: 0.4 });
-    sections.forEach(s => sectionObserver.observe(s));
-  </script>
+<footer>
+  <div class="footer-brand">
+    <img src="images/app_icon.jpg" alt="WirelessConnect Logo" style="width: 28px; height: 28px; border-radius: 6px;" />
+    <span>WirelessConnect</span>
+  </div>
+  <div class="footer-built" style="display:flex;align-items:center;gap:6px;">
+    Built by 
+    <a href="https://ranasheikh64.github.io/jronix-software-solutions/" target="_blank" style="display:inline-flex;align-items:center;gap:6px;">
+      <img src="images/jronix_logo.png" alt="Jronix Logo" style="width: 18px; height: 18px; border-radius: 4px;" />
+      Jronix &ndash; Software Solutions
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-left:-2px;"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+    </a>
+  </div>
+  <div class="footer-copy">&copy; 2025 WirelessConnect. All rights reserved.</div>
+</footer>
 
 </body>
 </html>
